@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="theme-color" content="#713D2B" />
+  <title>Create account · KORA</title>
+  <link rel="icon" href="images/kora-logo.jpg" />
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@500;600;700;800;900&family=Noto+Sans+Devanagari:wght@400;600;700;800&family=Noto+Sans+Telugu:wght@400;600;700;800&family=Noto+Sans+Tamil:wght@400;600;700;800&family=Noto+Sans+Gujarati:wght@400;600;700;800&family=Noto+Sans+Gurmukhi:wght@400;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="css/styles.css" />
+  <link rel="stylesheet" href="css/liquid.css" />
+  <link rel="stylesheet" href="css/app.css" />
+</head>
+<body>
+  <div class="aqua" aria-hidden="true"><span class="aqua__blob aqua__blob--1"></span><span class="aqua__blob aqua__blob--2"></span><span class="aqua__blob aqua__blob--3"></span></div>
+
+  <div class="lang-float"><label class="lang"><select data-lang-select aria-label="Language"><option value="en">English</option><option value="hi">हिंदी</option><option value="te">తెలుగు</option><option value="ta">தமிழ்</option><option value="gu">ગુજરાતી</option><option value="mr">मराठी</option><option value="pa">ਪੰਜਾਬੀ</option></select></label></div>
+
+  <div class="auth-shell" data-auth="register" id="auth">
+    <a href="index.html" class="auth-top">
+      <span class="brand__mark"><svg viewBox="0 0 48 48" width="34" height="34"><circle cx="24" cy="24" r="22" fill="#fbf4e4"/><path d="M4 30c7 5 13 5 20 1s13-4 20 1v12H4Z" fill="#c9a227"/><path d="M24 26c0-6 4-9 10-10-1 7-4 10-10 10Z" fill="#713D2B"/><path d="M24 26c0-5-3-8-8-9 1 6 3 8 8 9Z" fill="#8a5636"/><path d="M24 30V16" stroke="#713D2B" stroke-width="2.4" stroke-linecap="round"/></svg></span>
+      KORA
+    </a>
+
+    <div class="auth-card glass glass--strong">
+      <h1>Create your account</h1>
+      <p class="sub">Phone OTP verifies you — GST is optional, and only for business buyers and suppliers.</p>
+      <div class="msg" id="msg"></div>
+
+      <div class="step" id="step-phone">
+        <label style="display:block;font-family:var(--head);font-weight:600;font-size:.82rem;color:var(--clay);margin-bottom:.5rem">I am a…</label>
+        <div class="rolechips">
+          <div class="rolechip" data-role="farmer" tabindex="0">
+            <svg class="ico" viewBox="0 0 24 24"><path d="M12 21v-8"/><path d="M12 13c0-3.2 2.2-5.4 5.4-5.4C17.4 10.8 15.2 13 12 13z"/><path d="M12 13c0-3.2-2.2-5.4-5.4-5.4C6.6 10.8 8.8 13 12 13z"/></svg>
+            <span>Farmer</span>
+          </div>
+          <div class="rolechip" data-role="buyer" tabindex="0">
+            <svg class="ico" viewBox="0 0 24 24"><circle cx="9" cy="19" r="1.5"/><circle cx="17" cy="19" r="1.5"/><path d="M3 4h2.2l2.3 11h9.2l1.9-7.5H6"/></svg>
+            <span>Buyer</span>
+          </div>
+          <div class="rolechip" data-role="supplier" tabindex="0">
+            <svg class="ico" viewBox="0 0 24 24"><path d="M15.5 4.2a4.2 4.2 0 0 0-5.3 5.3l-6 6 3 3 6-6a4.2 4.2 0 0 0 5.3-5.3l-2.6 2.6-2-2z"/></svg>
+            <span>Supplier</span>
+          </div>
+        </div>
+
+        <div class="field">
+          <label for="name">Full name</label>
+          <input class="input" id="name" type="text" placeholder="Your name" autocomplete="name" />
+        </div>
+        <div class="field">
+          <label for="phone">Phone number</label>
+          <input class="input" id="phone" type="tel" inputmode="numeric" placeholder="10-digit mobile number" autocomplete="tel" />
+        </div>
+        <div class="field">
+          <label for="gst">GST number <span style="color:var(--text-soft);font-weight:400">(optional — business buyers/suppliers)</span></label>
+          <input class="input" id="gst" type="text" placeholder="Optional" />
+        </div>
+        <label class="consent"><input type="checkbox" id="consent" /> <span>I accept the Terms of Use and acknowledge the Privacy Policy.</span></label>
+        <p class="consent-links"><span>Read:</span> <a href="terms.html" target="_blank">Terms of Use</a> · <a href="privacy.html" target="_blank">Privacy Policy</a></p>
+        <button class="btn btn--gold btn--block" id="sendBtn">Send OTP</button>
+      </div>
+
+      <div class="step hidden" id="step-otp">
+        <div class="otp-hint hidden" id="otpHint">
+          Pilot mode — your code is <strong id="otpCode"></strong> (no SMS is sent)
+        </div>
+        <div class="field">
+          <label for="otp">Enter OTP</label>
+          <input class="input" id="otp" type="text" inputmode="numeric" maxlength="6" placeholder="6-digit code" />
+        </div>
+        <button class="btn btn--gold btn--block" id="verifyBtn">Verify &amp; create account</button>
+      </div>
+
+      <p class="auth-foot">Already have an account? <a href="login.html">Log in</a></p>
+    </div>
+    <p class="back-home"><a href="index.html">← Back to home</a></p>
+  </div>
+
+  <script src="js/translations.js"></script>
+  <script src="js/i18n.js"></script>
+  <script src="js/local-api.js"></script>
+  <script src="js/api.js"></script>
+  <script src="js/auth.js"></script>
+</body>
+</html>
