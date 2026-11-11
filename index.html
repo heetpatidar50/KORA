@@ -1,0 +1,561 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="theme-color" content="#713D2B" />
+  <meta name="description" content="KORA — India's farm-to-buyer marketplace: AI demand forecasting, pooled spoilage-aware logistics and transparent, itemised pricing connecting FPOs and farmers with bulk buyers." />
+  <title>KORA — Farm-to-Buyer Intelligence Platform</title>
+  <link rel="icon" href="images/kora-logo.jpg" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@500;600;700;800;900&family=Noto+Sans+Devanagari:wght@400;600;700;800&family=Noto+Sans+Telugu:wght@400;600;700;800&family=Noto+Sans+Tamil:wght@400;600;700;800&family=Noto+Sans+Gujarati:wght@400;600;700;800&family=Noto+Sans+Gurmukhi:wght@400;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="css/styles.css" />
+  <link rel="stylesheet" href="css/liquid.css" />
+  <link rel="stylesheet" href="css/motion.css" />
+</head>
+<body>
+  <!-- ===================== ICON SPRITE (minimal line icons) ===================== -->
+  <svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false">
+    <defs>
+      <!-- liquid-glass refraction: the backdrop is bent by a smooth noise field (Chromium desktops only, see motion.js) -->
+      <filter id="lg-refract" x="0" y="0" width="100%" height="100%" color-interpolation-filters="sRGB">
+        <feTurbulence type="fractalNoise" baseFrequency="0.008 0.012" numOctaves="2" seed="7" result="noise"/>
+        <feGaussianBlur in="noise" stdDeviation="2" result="soft"/>
+        <feDisplacementMap in="SourceGraphic" in2="soft" scale="26" xChannelSelector="R" yChannelSelector="G"/>
+      </filter>
+      <symbol id="i-truck" viewBox="0 0 24 24"><path d="M3 7h11v9H3z"/><path d="M14 10h3.5l3 3v3H14z"/><circle cx="7" cy="18" r="1.7"/><circle cx="17.5" cy="18" r="1.7"/></symbol>
+      <symbol id="i-warehouse" viewBox="0 0 24 24"><path d="M3 9l9-5 9 5v11H3z"/><path d="M7 20v-6h10v6"/><path d="M7 14h10"/></symbol>
+      <symbol id="i-sprout" viewBox="0 0 24 24"><path d="M12 21v-8"/><path d="M12 13c0-3.2 2.2-5.4 5.4-5.4C17.4 10.8 15.2 13 12 13z"/><path d="M12 13c0-3.2-2.2-5.4-5.4-5.4C6.6 10.8 8.8 13 12 13z"/></symbol>
+      <symbol id="i-flask" viewBox="0 0 24 24"><path d="M9 3h6"/><path d="M10 3v6l-4.2 8.2A2 2 0 0 0 7.6 20h8.8a2 2 0 0 0 1.8-2.8L14 9V3"/><path d="M8.3 15h7.4"/></symbol>
+      <symbol id="i-weather" viewBox="0 0 24 24"><circle cx="8" cy="7" r="2.5"/><path d="M8 2.6v1.3M3.3 7H4.6M4.6 3.6l.9.9M11.4 3.6l-.9.9"/><path d="M9 20h8.2a3.2 3.2 0 0 0 .2-6.4A4.3 4.3 0 0 0 9.4 12 3.6 3.6 0 0 0 9 20z"/></symbol>
+      <symbol id="i-cpu" viewBox="0 0 24 24"><rect x="7" y="7" width="10" height="10" rx="2"/><rect x="10" y="10" width="4" height="4" rx="1"/><path d="M10 3v2M14 3v2M10 19v2M14 19v2M3 10h2M3 14h2M19 10h2M19 14h2"/></symbol>
+      <symbol id="i-wrench" viewBox="0 0 24 24"><path d="M15.5 4.2a4.2 4.2 0 0 0-5.3 5.3l-6 6 3 3 6-6a4.2 4.2 0 0 0 5.3-5.3l-2.6 2.6-2-2z"/></symbol>
+      <symbol id="i-bank" viewBox="0 0 24 24"><path d="M3 9l9-5 9 5"/><path d="M4 9h16"/><path d="M6 9v8M10 9v8M14 9v8M18 9v8"/><path d="M3 20h18"/></symbol>
+      <symbol id="i-cart" viewBox="0 0 24 24"><circle cx="9" cy="19" r="1.5"/><circle cx="17" cy="19" r="1.5"/><path d="M3 4h2.2l2.3 11h9.2l1.9-7.5H6"/></symbol>
+      <symbol id="i-landmark" viewBox="0 0 24 24"><path d="M12 3l8 4H4z"/><path d="M4 11h16"/><path d="M6 11v6M10 11v6M14 11v6M18 11v6"/><path d="M3 20h18"/></symbol>
+      <symbol id="i-phone-check" viewBox="0 0 24 24"><rect x="7" y="3" width="10" height="18" rx="2.4"/><path d="M9.3 7.6l1.9 1.9 3.6-3.6"/><path d="M10.5 17.5h3"/></symbol>
+      <symbol id="i-file" viewBox="0 0 24 24"><path d="M7 3h7l4 4v14H7z"/><path d="M14 3v4h4"/><path d="M9.5 12.5h6M9.5 16h6"/></symbol>
+      <symbol id="i-rupee" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M9 8h6M9 11h6M14.2 8.2c.3 3-2 4-5 4l4.3 3.8"/></symbol>
+      <symbol id="i-sparkles" viewBox="0 0 24 24"><path d="M12 3.5l1.7 4.6L18 10l-4.3 1.9L12 16l-1.7-4.1L6 10l4.3-1.9z"/><path d="M18.5 15l.7 1.9 1.9.6-1.9.7-.7 1.8-.7-1.8-1.9-.7 1.9-.6z"/></symbol>
+      <symbol id="i-lock" viewBox="0 0 24 24"><rect x="5" y="10" width="14" height="10.5" rx="2.4"/><path d="M8 10V8a4 4 0 0 1 8 0v2"/><circle cx="12" cy="15" r="1.2"/></symbol>
+      <symbol id="i-shield-check" viewBox="0 0 24 24"><path d="M12 3l7 3v5c0 5-3 8-7 10-4-2-7-5-7-10V6z"/><path d="M8.8 12l2.1 2.1 4.3-4.3"/></symbol>
+      <symbol id="i-chat" viewBox="0 0 24 24"><path d="M4 5h16v11H9l-4 3.3V16H4z"/><path d="M8.5 10.5h.01M12 10.5h.01M15.5 10.5h.01"/></symbol>
+      <symbol id="i-chart" viewBox="0 0 24 24"><path d="M4 4v16h16"/><rect x="7" y="11" width="2.8" height="6"/><rect x="12" y="7" width="2.8" height="10"/><rect x="17" y="13.5" width="2.8" height="3.5"/></symbol>
+      <symbol id="i-badge" viewBox="0 0 24 24"><circle cx="12" cy="9.5" r="6"/><path d="M9.5 9.5l1.8 1.8 3.3-3.3"/><path d="M8.3 14.5l-1.3 6 5-2.8 5 2.8-1.3-6"/></symbol>
+      <symbol id="i-swap" viewBox="0 0 24 24"><path d="M4 8.5h13l-3.4-3.4"/><path d="M20 15.5H7l3.4 3.4"/></symbol>
+      <symbol id="i-trending" viewBox="0 0 24 24"><path d="M3 17l6-6 4 4 7.5-8.5"/><path d="M15 6.5h6v6"/></symbol>
+      <symbol id="i-store" viewBox="0 0 24 24"><path d="M3.5 9l1.2-5h14.6L20.5 9"/><path d="M4.5 9v11h15V9"/><path d="M3.5 9a3 3 0 0 0 6 0 3 3 0 0 0 6 0 3 3 0 0 0 4.5 0"/><path d="M9.5 20v-5h5v5"/></symbol>
+      <symbol id="i-route" viewBox="0 0 24 24"><circle cx="6" cy="6" r="2.2"/><circle cx="18" cy="18" r="2.2"/><path d="M8.2 6H14a3 3 0 0 1 0 6H9a3 3 0 0 0 0 6h6.8"/></symbol>
+      <symbol id="i-receipt" viewBox="0 0 24 24"><path d="M6 3h12v18l-2-1.3-2 1.3-2-1.3-2 1.3-2-1.3L6 21z"/><path d="M9 8h6M9 11.5h6M9 15h4"/></symbol>
+      <symbol id="i-tag" viewBox="0 0 24 24"><path d="M3.5 12.5l8-8 9 1 1 9-8 8z"/><circle cx="15.5" cy="8.5" r="1.4"/></symbol>
+      <symbol id="i-clock" viewBox="0 0 24 24"><circle cx="12" cy="12" r="8.5"/><path d="M12 7.3V12l3.2 2.1"/></symbol>
+      <symbol id="i-leaf" viewBox="0 0 24 24"><path d="M4.5 19.5c0-9 6.8-14.5 15.5-14.5 0 8.7-5.8 14.5-15.5 14.5z"/><path d="M4.5 19.5c3.8-5.8 7.8-8 12-9"/></symbol>
+      <symbol id="i-users" viewBox="0 0 24 24"><circle cx="9" cy="8" r="3.1"/><path d="M3.2 20c0-3.6 2.8-6 5.8-6s5.8 2.4 5.8 6"/><path d="M16 5.3a3 3 0 0 1 0 5.9M21 20c0-3-1.8-5.3-4.5-5.9"/></symbol>
+      <symbol id="i-check" viewBox="0 0 24 24"><path d="M5 12.5l4.4 4.4L19 7.4"/></symbol>
+      <symbol id="i-activity" viewBox="0 0 24 24"><path d="M3 12h4l2.4 7 4.2-14 2.4 7H21"/></symbol>
+      <symbol id="i-user-check" viewBox="0 0 24 24"><circle cx="9" cy="8" r="3.2"/><path d="M3.2 20c0-3.6 2.8-6 5.8-6 1.3 0 2.5.4 3.5 1"/><path d="M14.8 16l2 2 4-4"/></symbol>
+      <symbol id="i-heart" viewBox="0 0 24 24"><path d="M12 20s-7-4.6-9-9.2C1.6 7.2 4 4.2 7 4.2c2 0 3.3 1.2 5 3 1.7-1.8 3-3 5-3 3 0 5.4 3 4 6.6C19 15.4 12 20 12 20z"/></symbol>
+      <symbol id="i-arrow-down" viewBox="0 0 24 24"><path d="M12 5v14M6 13l6 6 6-6"/></symbol>
+      <symbol id="i-arrow-right" viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6"/></symbol>
+      <symbol id="i-globe" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3c3 3.2 3 14.8 0 18M12 3c-3 3.2-3 14.8 0 18"/></symbol>
+      <symbol id="i-scales" viewBox="0 0 24 24"><path d="M12 4v16M7 20h10"/><path d="M6 7h12l-2.5-2.5M6 7l-3 6a3 3 0 0 0 6 0zM18 7l3 6a3 3 0 0 1-6 0z"/></symbol>
+    </defs>
+  </svg>
+
+  <!-- drifting water light (global) -->
+  <div class="aqua" aria-hidden="true">
+    <span class="aqua__blob aqua__blob--1"></span>
+    <span class="aqua__blob aqua__blob--2"></span>
+    <span class="aqua__blob aqua__blob--3"></span>
+    <span class="aqua__blob aqua__blob--4"></span>
+    <span class="aqua__caustics"></span>
+  </div>
+
+  <!-- ===================== FLOATING GLASS NAV ===================== -->
+  <div class="nav-wrap">
+    <header class="nav glass" id="nav">
+      <a href="#top" class="brand" aria-label="KORA home">
+        <span class="brand__mark" aria-hidden="true">
+          <svg viewBox="0 0 48 48" width="30" height="30" role="img">
+            <circle cx="24" cy="24" r="22" fill="#fbf4e4"/>
+            <path d="M4 30c7 5 13 5 20 1s13-4 20 1v12H4Z" fill="#c9a227"/>
+            <path d="M24 26c0-6 4-9 10-10-1 7-4 10-10 10Z" fill="#713D2B"/>
+            <path d="M24 26c0-5-3-8-8-9 1 6 3 8 8 9Z" fill="#8a5636"/>
+            <path d="M24 30V16" stroke="#713D2B" stroke-width="2.4" stroke-linecap="round"/>
+          </svg>
+        </span>
+        <span class="brand__name">KORA</span>
+      </a>
+
+      <nav class="nav__links" aria-label="Primary">
+        <a href="#why-now" data-i18n="nav.why">Why now</a>
+        <a href="#ecosystem" data-i18n="nav.ecosystem">Ecosystem</a>
+        <a href="#who-uses" data-i18n="nav.who">Who uses</a>
+        <a href="#intelligence" data-i18n="nav.intelligence">Intelligence</a>
+        <a href="#trust" data-i18n="nav.trust">Trust</a>
+      </nav>
+
+      <div class="nav__actions">
+        <label class="lang" aria-label="Choose language">
+          <svg class="ico lang__ico" aria-hidden="true"><use href="#i-globe"/></svg>
+          <select id="langSelect" data-lang-select>
+            <option value="en">English</option>
+            <option value="hi">हिंदी</option>
+            <option value="te">తెలుగు</option>
+            <option value="ta">தமிழ்</option>
+            <option value="gu">ગુજરાતી</option>
+            <option value="mr">मराठी</option>
+            <option value="pa">ਪੰਜਾਬੀ</option>
+          </select>
+        </label>
+        <a href="login.html" class="btn btn--ghost-ink" data-i18n="nav.login">Login</a>
+        <a href="register.html" class="btn btn--gold" data-i18n="nav.getStarted">Get started</a>
+        <button class="nav__burger" id="burger" aria-label="Open menu" aria-expanded="false">
+          <span></span><span></span><span></span>
+        </button>
+      </div>
+    </header>
+
+    <div class="nav__mobile glass" id="navMobile" hidden>
+      <a href="#why-now" data-i18n="nav.why">Why now</a>
+      <a href="#ecosystem" data-i18n="nav.ecosystem">Ecosystem</a>
+      <a href="#who-uses" data-i18n="nav.who">Who uses</a>
+      <a href="#intelligence" data-i18n="nav.intelligence">Intelligence</a>
+      <a href="#trust" data-i18n="nav.trust">Trust</a>
+      <div class="nav__mobile-actions">
+        <a href="login.html" class="btn btn--ghost-ink">Login</a>
+        <a href="register.html" class="btn btn--gold">Get started</a>
+      </div>
+    </div>
+  </div>
+
+  <main id="top">
+    <!-- ===================== HERO ===================== -->
+    <section class="hero" id="hero">
+      <div class="hero__bg" aria-hidden="true"></div>
+      <div class="hero__overlay" aria-hidden="true"></div>
+      <div class="hero__sky" aria-hidden="true">
+        <span class="hero__sun"></span>
+      </div>
+      <div class="container hero__inner">
+        <p class="eyebrow eyebrow--ondark"><span class="dot"></span><span data-i18n="hero.badge">PUBLIC PILOT · INDIA</span></p>
+        <h1 class="hero__title" data-i18n="hero.title">Best price. Best market. Verified buyers and sellers.</h1>
+        <p class="hero__lead" data-i18n="hero.lead">Find buyers for your produce, explore farming services and get guidance in your language — with AI demand forecasts, pooled logistics and pricing where every deduction is shown.</p>
+
+        <div class="notice glass" data-i18n="hero.notice">
+          Public pilot: core login, registration, listings, bids and service requests are live. Payments and some dashboards use simulated or sample data until banking integrations complete.
+        </div>
+
+        <div class="hero__roles">
+          <a href="register.html#farmer" class="btn btn--glass btn--lg"><svg class="ico" aria-hidden="true"><use href="#i-sprout"/></svg><span data-i18n="hero.farmer">I am a farmer</span></a>
+          <a href="register.html#buyer" class="btn btn--glass btn--lg"><svg class="ico" aria-hidden="true"><use href="#i-cart"/></svg><span data-i18n="hero.buyer">I am a buyer</span></a>
+          <a href="register.html#supplier" class="btn btn--glass btn--lg"><svg class="ico" aria-hidden="true"><use href="#i-wrench"/></svg><span data-i18n="hero.supplier">I provide services</span></a>
+        </div>
+
+        <div class="hero__secondary">
+          <a href="#how" class="btn btn--glass-soft" data-i18n="hero.how">See how it works</a>
+          <a href="login.html" class="btn btn--glass-soft" data-i18n="hero.login">Log in</a>
+        </div>
+
+        <ul class="hero__checks">
+          <li><svg class="ico" aria-hidden="true"><use href="#i-check"/></svg> Phone OTP signup</li>
+          <li><svg class="ico" aria-hidden="true"><use href="#i-check"/></svg> Produce listings &amp; bids (live)</li>
+          <li><svg class="ico" aria-hidden="true"><use href="#i-check"/></svg> English &amp; Hindi (more languages pilot)</li>
+          <li><svg class="ico" aria-hidden="true"><use href="#i-check"/></svg> Kisan Sathi guidance</li>
+          <li><svg class="ico" aria-hidden="true"><use href="#i-check"/></svg> Service requests for suppliers</li>
+          <li><svg class="ico" aria-hidden="true"><use href="#i-check"/></svg> Honest pilot — no fake stats</li>
+        </ul>
+      </div>
+      <div class="hero__ground" aria-hidden="true">
+        <svg class="tubewell" data-tubewell viewBox="0 0 190 170">
+          <defs>
+            <linearGradient id="tw-pipe" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#c9d1d6"/><stop offset=".5" stop-color="#8f9aa1"/><stop offset="1" stop-color="#6c767c"/></linearGradient>
+            <linearGradient id="tw-roof" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#9aa3a9"/><stop offset=".5" stop-color="#cfd5d8"/><stop offset="1" stop-color="#8d969c"/></linearGradient>
+            <linearGradient id="tw-wall" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#000" stop-opacity=".12"/><stop offset=".55" stop-color="#000" stop-opacity="0"/><stop offset="1" stop-color="#000" stop-opacity=".22"/></linearGradient>
+            <linearGradient id="tw-water" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#9ad3e4"/><stop offset="1" stop-color="#4d97b0"/></linearGradient>
+            <radialGradient id="tw-shadow" cx=".5" cy=".5" r=".5"><stop offset="0" stop-color="#3d2a1a" stop-opacity=".35"/><stop offset="1" stop-color="#3d2a1a" stop-opacity="0"/></radialGradient>
+            <pattern id="tw-brick" width="16" height="8" patternUnits="userSpaceOnUse"><rect width="16" height="8" fill="#b9663f"/><path d="M0 7.5H16M8 0V3.5M0 3.5H16M0 4V7.5" stroke="#8e4a2c" stroke-width="1"/></pattern>
+          </defs>
+          <ellipse cx="100" cy="166" rx="96" ry="6" fill="url(#tw-shadow)"/>
+          <rect x="166" y="50" width="7" height="22" rx="1.5" fill="#5d6468"/>
+          <rect x="96" y="88" width="86" height="78" fill="url(#tw-brick)"/>
+          <rect x="96" y="88" width="86" height="78" fill="url(#tw-wall)"/>
+          <rect x="96" y="90" width="86" height="7" fill="#000" opacity=".2"/>
+          <polygon points="88,91 190,91 180,68 98,68" fill="url(#tw-roof)"/>
+          <path d="M98 68 L180 68" stroke="#e8eef1" stroke-width="1.5"/>
+          <rect x="148" y="118" width="24" height="48" rx="2" fill="#5a2f1f"/>
+          <circle cx="166" cy="143" r="1.6" fill="#d9b25a"/>
+          <rect x="106" y="102" width="24" height="16" rx="2" fill="#24363e" stroke="#e7d3b0" stroke-width="2"/>
+          <rect x="52" y="111" width="46" height="10" rx="3" fill="url(#tw-pipe)"/>
+          <rect x="90" y="108" width="6" height="16" rx="1.5" fill="#6c767c"/>
+          <rect x="44" y="111" width="12" height="18" rx="4" fill="url(#tw-pipe)"/>
+          <rect x="43" y="127" width="14" height="4" rx="1.5" fill="#6c767c"/>
+          <rect x="8" y="146" width="80" height="20" rx="3" fill="#cdbb9f" stroke="#a48f71" stroke-width="1.5"/>
+          <rect x="12" y="149" width="72" height="9" rx="2" fill="url(#tw-water)"/>
+          <rect x="8" y="160" width="80" height="6" rx="2" fill="#000" opacity=".1"/>
+        </svg>
+      </div>
+    </section>
+
+    <!-- ===================== HOW IT WORKS ===================== -->
+    <section class="section section--light" id="how">
+      <div class="container">
+        <p class="eyebrow"><span class="eyebrow__rule"></span>DEMONSTRATION</p>
+        <h2 class="section__title">See how it works</h2>
+        <p class="section__lead">Three steps in the public pilot — each button below matches a real registration or login path.</p>
+
+        <div class="steps">
+          <article class="step glass">
+            <div class="step__num">1</div>
+            <h3>Choose your role</h3>
+            <p>Farmer, buyer or service provider — phone OTP verifies you (not GST for every buyer).</p>
+            <a href="#who-uses" class="btn btn--soft">Compare roles</a>
+          </article>
+          <article class="step glass">
+            <div class="step__num">2</div>
+            <h3>Register with consent</h3>
+            <p>Accept Terms and acknowledge Privacy before your account is created — saved if you open legal pages.</p>
+            <a href="register.html" class="btn btn--soft">Start registration</a>
+          </article>
+          <article class="step glass">
+            <div class="step__num">3</div>
+            <h3>List, bid or book</h3>
+            <p>Farmers list produce; buyers bid after signup; suppliers respond to service requests.</p>
+            <a href="login.html" class="btn btn--soft">Log in to workspace</a>
+          </article>
+        </div>
+        <p class="section__foot">Produce browsing for guests is not public yet — buyers register to see farmer listings.</p>
+      </div>
+    </section>
+
+    <!-- ===================== WHY NOW ===================== -->
+    <section class="section section--deep" id="why-now">
+      <div class="bubbles" aria-hidden="true" data-bubbles></div>
+      <div class="container">
+        <p class="eyebrow eyebrow--onink"><span class="eyebrow__rule"></span>WHY NOW</p>
+        <h2 class="section__title section__title--light">Agriculture is changing</h2>
+        <p class="section__lead section__lead--light">Fruit and vegetable growers keep only a fraction of what shoppers pay, while perishables rot between farm and market. Demographics, connectivity and AI are converging — India needs an intelligence layer for agriculture, not just another marketplace.</p>
+
+        <div class="problem glass glass--strong">
+          <div class="problem__big">~33<span>%</span></div>
+          <div class="problem__body">
+            <strong>of the consumer price reaches the tomato farmer</strong>
+            <span>RBI (2024) estimates the farmer's share at roughly 33% for tomatoes, 36% for onions and 37% for potatoes — against about 70% for milk. KORA shortens the chain so more of that value returns to the farm.</span>
+          </div>
+        </div>
+
+        <div class="stats">
+          <div class="stat glass"><div class="stat__num">42<span>%</span></div><div class="stat__label">of India's workforce depends on agriculture</div></div>
+          <div class="stat glass"><div class="stat__num">43.4<span> Cr</span></div><div class="stat__label">rural internet users — and growing</div></div>
+          <div class="stat glass"><div class="stat__num">10,000<span>+</span></div><div class="stat__label">Farmer Producer Organisations nationwide</div></div>
+          <div class="stat glass"><div class="stat__num stat__num--ai"><svg class="ico" aria-hidden="true"><use href="#i-cpu"/></svg></div><div class="stat__label">AI is transforming every agricultural decision</div></div>
+        </div>
+        <p class="section__foot section__foot--light">Government digital infrastructure — e-NAM, ONDC, 10,000 FPOs with bank accounts and legal identity — is expanding. KORA brings intelligence, commerce and services together on top of it, now.</p>
+      </div>
+    </section>
+
+    <!-- ===================== ECOSYSTEM ===================== -->
+    <section class="section section--light" id="ecosystem">
+      <div class="container">
+        <p class="eyebrow"><span class="eyebrow__rule"></span>CONNECTED ECOSYSTEM</p>
+        <h2 class="section__title">One connected agricultural ecosystem</h2>
+        <p class="section__lead">KORA orchestrates the ecosystem — connecting existing participants rather than replacing them. We facilitate trades rather than take inventory; intelligence flows between every node.</p>
+
+        <div class="hub">
+          <div class="hub__center glass glass--strong">
+            <span class="hub__eyebrow">FARMER &amp; SUPPLY CHAIN</span>
+            <strong>KORA</strong>
+            <span class="hub__tag">Connecting everyone. Empowering agriculture.</span>
+          </div>
+          <div class="hub__pillars">
+            <div class="pillar glass"><span class="itile"><svg class="ico" aria-hidden="true"><use href="#i-chat"/></svg></span><div><strong>AI Assistant</strong><span>24/7 smart support · guidance in your language</span></div></div>
+            <div class="pillar glass"><span class="itile"><svg class="ico" aria-hidden="true"><use href="#i-chart"/></svg></span><div><strong>Data &amp; Insights</strong><span>Real-time · reliable · relevant</span></div></div>
+            <div class="pillar glass"><span class="itile"><svg class="ico" aria-hidden="true"><use href="#i-badge"/></svg></span><div><strong>Trust &amp; Verification</strong><span>Verified users · secure transactions</span></div></div>
+            <div class="pillar glass"><span class="itile"><svg class="ico" aria-hidden="true"><use href="#i-swap"/></svg></span><div><strong>Seamless Transactions</strong><span>Transparent · safe payments · on-time delivery</span></div></div>
+          </div>
+        </div>
+
+        <div class="nodes">
+          <article class="node glass"><span class="itile"><svg class="ico" aria-hidden="true"><use href="#i-truck"/></svg></span><h4>Transport</h4><ul><li>Book vehicles</li><li>Compare prices</li><li>On-time delivery</li><li>Live tracking</li></ul></article>
+          <article class="node glass"><span class="itile"><svg class="ico" aria-hidden="true"><use href="#i-warehouse"/></svg></span><h4>Warehouses</h4><ul><li>Storage solutions</li><li>Safe &amp; secure</li><li>Short &amp; long term</li><li>Easy booking</li></ul></article>
+          <article class="node glass node--accent"><span class="itile itile--gold"><svg class="ico" aria-hidden="true"><use href="#i-sprout"/></svg></span><h4>Farmers</h4><ul><li>List produce</li><li>Get best prices</li><li>Find buyers</li><li>Access services</li></ul></article>
+          <article class="node glass"><span class="itile"><svg class="ico" aria-hidden="true"><use href="#i-flask"/></svg></span><h4>Soil Labs</h4><ul><li>Soil testing</li><li>Nutrient analysis</li><li>Health reports</li><li>Expert advice</li></ul></article>
+          <article class="node glass"><span class="itile"><svg class="ico" aria-hidden="true"><use href="#i-weather"/></svg></span><h4>Weather</h4><ul><li>Accurate forecast</li><li>Weather alerts</li><li>Crop advisories</li><li>Plan ahead</li></ul></article>
+          <article class="node glass node--accent"><span class="itile itile--gold"><svg class="ico" aria-hidden="true"><use href="#i-cpu"/></svg></span><h4>AI</h4><ul><li>Smart recommendations</li><li>Price predictions</li><li>Risk alerts</li><li>Voice assistant</li></ul></article>
+          <article class="node glass"><span class="itile"><svg class="ico" aria-hidden="true"><use href="#i-wrench"/></svg></span><h4>Suppliers</h4><ul><li>Machinery &amp; tools</li><li>Seeds &amp; inputs</li><li>Labour services</li><li>Quality assured</li></ul></article>
+          <article class="node glass"><span class="itile"><svg class="ico" aria-hidden="true"><use href="#i-bank"/></svg></span><h4>Banks</h4><ul><li>Easy financing</li><li>Crop loans</li><li>Insurance</li><li>Secure payments</li></ul></article>
+          <article class="node glass node--accent"><span class="itile itile--gold"><svg class="ico" aria-hidden="true"><use href="#i-cart"/></svg></span><h4>Buyers</h4><ul><li>Discover farmers</li><li>Compare quality</li><li>Place bids</li><li>Secure supply</li></ul></article>
+          <article class="node glass"><span class="itile"><svg class="ico" aria-hidden="true"><use href="#i-landmark"/></svg></span><h4>Government</h4><ul><li>Schemes &amp; subsidies</li><li>Policy updates</li><li>Compliance support</li><li>Digital integration</li></ul></article>
+        </div>
+
+        <div class="benefits">
+          <div class="benefit glass"><span class="itile itile--sm"><svg class="ico" aria-hidden="true"><use href="#i-shield-check"/></svg></span><h4>Secure &amp; Trusted</h4><p>Verified identities, secure data &amp; safe transactions.</p></div>
+          <div class="benefit glass"><span class="itile itile--sm"><svg class="ico" aria-hidden="true"><use href="#i-tag"/></svg></span><h4>Better Prices</h4><p>Transparent market access for fair &amp; better pricing.</p></div>
+          <div class="benefit glass"><span class="itile itile--sm"><svg class="ico" aria-hidden="true"><use href="#i-clock"/></svg></span><h4>Save Time &amp; Effort</h4><p>Everything you need on one platform, anytime, anywhere.</p></div>
+          <div class="benefit glass"><span class="itile itile--sm"><svg class="ico" aria-hidden="true"><use href="#i-leaf"/></svg></span><h4>Grow Better</h4><p>Data, insights &amp; expert support for better decisions.</p></div>
+          <div class="benefit glass"><span class="itile itile--sm"><svg class="ico" aria-hidden="true"><use href="#i-users"/></svg></span><h4>Stronger Together</h4><p>A connected agri ecosystem that grows together.</p></div>
+        </div>
+        <p class="section__foot">From soil testing to transport, from AI recommendations to government schemes — one trusted network.</p>
+      </div>
+    </section>
+
+    <!-- ===================== WHO USES ===================== -->
+    <section class="section section--deep" id="who-uses">
+      <div class="container">
+        <p class="eyebrow eyebrow--onink"><span class="eyebrow__rule"></span>WHO USES KORA</p>
+        <h2 class="section__title section__title--light">Built for every role in agriculture</h2>
+        <p class="section__lead section__lead--light">Each participant receives clear value — not just features, but outcomes that matter to their business.</p>
+
+        <div class="roles">
+          <article class="role glass">
+            <span class="itile"><svg class="ico" aria-hidden="true"><use href="#i-sprout"/></svg></span>
+            <span class="role__tag">Farmer</span>
+            <ul class="role__points"><li>Grow smarter.</li><li>Sell better.</li><li>Earn more.</li></ul>
+            <a href="register.html#farmer" class="btn btn--gold btn--block">Register your farm</a>
+          </article>
+          <article class="role glass">
+            <span class="itile"><svg class="ico" aria-hidden="true"><use href="#i-cart"/></svg></span>
+            <span class="role__tag">Buyer</span>
+            <ul class="role__points"><li>Browse farmer listings after signup.</li><li>Place transparent bids.</li><li>Optional GST for business buyers only.</li></ul>
+            <a href="register.html#buyer" class="btn btn--gold btn--block">Register as a buyer</a>
+          </article>
+          <article class="role glass">
+            <span class="itile"><svg class="ico" aria-hidden="true"><use href="#i-wrench"/></svg></span>
+            <span class="role__tag">Supplier</span>
+            <ul class="role__points"><li>Reach more farmers.</li><li>Increase utilisation.</li><li>Grow revenue.</li></ul>
+            <a href="register.html#supplier" class="btn btn--gold btn--block">Become a partner</a>
+          </article>
+        </div>
+        <p class="section__foot section__foot--light">Already have an account? <a href="login.html" class="link-light">Login</a></p>
+      </div>
+    </section>
+
+    <!-- ===================== INTELLIGENCE ===================== -->
+    <section class="section section--light" id="intelligence">
+      <div class="container">
+        <div class="intel-head">
+          <h2 class="section__title">KORA AI</h2>
+          <p class="section__lead">The intelligence engine of the platform — not a chatbot bolt-on. A copilot for Indian agriculture that presents forecasts as ranges with confidence, not single numbers you can't trust.</p>
+        </div>
+
+        <div class="modules">
+          <article class="module glass"><span class="itile"><svg class="ico" aria-hidden="true"><use href="#i-trending"/></svg></span><span class="module__tag">MODULE A</span><h4>Demand &amp; price forecasting</h4><p>Uncertainty-aware estimates of what buyers will need, where and when — low / central / high scenarios with a visible accuracy history.</p></article>
+          <article class="module glass"><span class="itile"><svg class="ico" aria-hidden="true"><use href="#i-store"/></svg></span><span class="module__tag">MODULE B</span><h4>Direct buyer marketplace</h4><p>Bid-based matching on crop, quantity, grade, distance and delivery window. Every accepted order recorded as a documented transaction.</p></article>
+          <article class="module glass"><span class="itile"><svg class="ico" aria-hidden="true"><use href="#i-route"/></svg></span><span class="module__tag">MODULE C</span><h4>Pooled, spoilage-aware logistics</h4><p>Compatible orders combined and routed to cut empty trips and spoilage — planning on deadlines and shelf life, not distance alone.</p></article>
+          <article class="module glass"><span class="itile"><svg class="ico" aria-hidden="true"><use href="#i-receipt"/></svg></span><span class="module__tag">MODULE D</span><h4>Transparent price &amp; payment</h4><p>Every deduction itemised, from farm-gate price to the buyer's final price, with payment status, quality records and dispute workflow.</p></article>
+        </div>
+
+        <p class="eyebrow"><span class="eyebrow__rule"></span>INTELLIGENCE PRODUCT · AGRICULTURAL INTELLIGENCE LAYER</p>
+        <h3 class="section__subtitle">Intelligence across every decision</h3>
+        <p class="section__lead">Grow, sell, and operate with AI, data, and recommendations — organised into the pillars that matter to your business.</p>
+
+        <div class="pillars3">
+          <article class="pcard glass"><div class="pcard__head"><span class="itile"><svg class="ico" aria-hidden="true"><use href="#i-leaf"/></svg></span><h4>Grow</h4></div><ul><li>Crop</li><li>Weather</li><li>Disease</li><li>Soil</li></ul></article>
+          <article class="pcard glass"><div class="pcard__head"><span class="itile"><svg class="ico" aria-hidden="true"><use href="#i-rupee"/></svg></span><h4>Sell</h4></div><ul><li>Pricing</li><li>Buyers</li><li>Marketplace</li><li>Grading</li></ul></article>
+          <article class="pcard glass"><div class="pcard__head"><span class="itile"><svg class="ico" aria-hidden="true"><use href="#i-swap"/></svg></span><h4>Operate</h4></div><ul><li>Finance</li><li>Insurance</li><li>Transport</li><li>Machinery</li></ul></article>
+        </div>
+        <div class="center-cta">
+          <a href="login.html" class="btn btn--gold btn--lg">Experience KORA AI <svg class="ico" aria-hidden="true"><use href="#i-arrow-right"/></svg></a>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===================== ARCHITECTURE ===================== -->
+    <section class="section section--deep" id="architecture">
+      <div class="bubbles" aria-hidden="true" data-bubbles></div>
+      <div class="container">
+        <p class="eyebrow eyebrow--onink"><span class="eyebrow__rule"></span>PLATFORM ARCHITECTURE</p>
+        <h2 class="section__title section__title--light">How it all connects</h2>
+        <p class="section__lead section__lead--light">Users interact through intelligence. Intelligence powers the marketplace. Partners and transactions feed insights back.</p>
+
+        <div class="flow">
+          <div style="--i:0" class="flow__node glass">Users</div>
+          <svg style="--i:0" class="ico flow__arrow" aria-hidden="true"><use href="#i-arrow-down"/></svg>
+          <div style="--i:1" class="flow__node glass flow__node--accent">KORA AI</div>
+          <svg style="--i:1" class="ico flow__arrow" aria-hidden="true"><use href="#i-arrow-down"/></svg>
+          <div style="--i:2" class="flow__node glass">Marketplace</div>
+          <svg style="--i:2" class="ico flow__arrow" aria-hidden="true"><use href="#i-arrow-down"/></svg>
+          <div style="--i:3" class="flow__node glass">Partners</div>
+          <svg style="--i:3" class="ico flow__arrow" aria-hidden="true"><use href="#i-arrow-down"/></svg>
+          <div style="--i:4" class="flow__node glass">Transactions</div>
+          <svg style="--i:4" class="ico flow__arrow" aria-hidden="true"><use href="#i-arrow-down"/></svg>
+          <div style="--i:5" class="flow__node glass">Insights</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===================== MARKETPLACE ===================== -->
+    <section class="section section--light" id="marketplace">
+      <div class="container">
+        <p class="eyebrow"><span class="eyebrow__rule"></span>MARKETPLACE</p>
+        <h2 class="section__title">Commerce built on trust</h2>
+        <p class="section__lead">Transparent bidding, phone-verified accounts, and integrated services — live, pilot and planned areas labelled.</p>
+
+        <div class="market">
+          <article class="mcard glass"><span class="badge badge--live">LIVE</span><span class="itile itile--sm"><svg class="ico" aria-hidden="true"><use href="#i-sprout"/></svg></span><h4>Produce listings</h4><p>Farmers add products with quantity and land details.</p></article>
+          <article class="mcard glass"><span class="badge badge--live">LIVE</span><span class="itile itile--sm"><svg class="ico" aria-hidden="true"><use href="#i-scales"/></svg></span><h4>Transparent bidding</h4><p>Buyers place bids; farmers accept, reject or counter.</p></article>
+          <article class="mcard glass"><span class="badge badge--pilot">PILOT</span><span class="itile itile--sm"><svg class="ico" aria-hidden="true"><use href="#i-flask"/></svg></span><h4>Quality testing</h4><p>Book soil and yield tests from supplier partners (pilot coverage).</p></article>
+          <article class="mcard glass"><span class="badge badge--pilot">PILOT</span><span class="itile itile--sm"><svg class="ico" aria-hidden="true"><use href="#i-route"/></svg></span><h4>Logistics requests</h4><p>Request transport and warehousing from registered suppliers.</p></article>
+          <article class="mcard glass"><span class="badge badge--pilot">PILOT</span><span class="itile itile--sm"><svg class="ico" aria-hidden="true"><use href="#i-wrench"/></svg></span><h4>Machinery &amp; labour</h4><p>Browse and book supplier services from your dashboard.</p></article>
+          <article class="mcard glass"><span class="badge badge--pilot">PILOT</span><span class="itile itile--sm"><svg class="ico" aria-hidden="true"><use href="#i-rupee"/></svg></span><h4>Payments</h4><p>Settlement flows are simulated in this pilot — not live banking.</p></article>
+        </div>
+
+        <!-- Transparent price breakdown (Module D) -->
+        <div class="breakdown glass glass--strong">
+          <div class="breakdown__head">
+            <span class="itile"><svg class="ico" aria-hidden="true"><use href="#i-receipt"/></svg></span>
+            <h3>Every rupee, itemised</h3>
+            <p>No hidden middleman margins. A sample breakdown for 1&nbsp;kg of produce — illustrative figures, not a quote.</p>
+          </div>
+          <table class="breakdown__table">
+            <tbody>
+              <tr><td>Farmer sale price</td><td>₹14.00</td></tr>
+              <tr><td>Aggregation &amp; handling</td><td>₹1.20</td></tr>
+              <tr><td>Pooled transport</td><td>₹2.10</td></tr>
+              <tr><td>Platform fee</td><td>₹0.35</td></tr>
+              <tr class="breakdown__total"><td>Buyer's final price</td><td>₹17.65</td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="steps steps--compact">
+          <article class="step glass"><div class="step__num">1</div><h3>Register</h3><p>Phone OTP for all roles; GST optional for buyers and suppliers.</p></article>
+          <article class="step glass"><div class="step__num">2</div><h3>Connect</h3><p>List produce, browse marketplace, or publish services.</p></article>
+          <article class="step glass"><div class="step__num">3</div><h3>Transact</h3><p>Bid and fulfil orders; payments simulated until banking is live.</p></article>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===================== HUMAN IMPACT ===================== -->
+    <section class="section section--impact" id="impact">
+      <div class="container">
+        <p class="eyebrow eyebrow--onink"><span class="eyebrow__rule"></span>HUMAN IMPACT</p>
+        <h2 class="section__title section__title--light">Every decision matters</h2>
+        <p class="section__lead section__lead--light">Technology becomes meaningful when it improves lives — one decision at a time.</p>
+        <ul class="impact">
+          <li class="glass"><svg class="ico" aria-hidden="true"><use href="#i-activity"/></svg><span>One disease detected early.</span></li>
+          <li class="glass"><svg class="ico" aria-hidden="true"><use href="#i-user-check"/></svg><span>One better buyer found.</span></li>
+          <li class="glass"><svg class="ico" aria-hidden="true"><use href="#i-truck"/></svg><span>One transport booked on time.</span></li>
+          <li class="glass"><svg class="ico" aria-hidden="true"><use href="#i-flask"/></svg><span>One soil recommendation followed.</span></li>
+          <li class="glass"><svg class="ico" aria-hidden="true"><use href="#i-sprout"/></svg><span>One crop saved.</span></li>
+          <li class="glass"><svg class="ico" aria-hidden="true"><use href="#i-heart"/></svg><span>One family benefited.</span></li>
+        </ul>
+        <p class="section__foot section__foot--light">That is why KORA exists — intelligence in service of Indian agriculture.</p>
+      </div>
+      <div class="sprouts" aria-hidden="true" data-sprouts></div>
+    </section>
+
+    <!-- ===================== TRUST ===================== -->
+    <section class="section section--light" id="trust">
+      <div class="container">
+        <p class="eyebrow"><span class="eyebrow__rule"></span>WHY TRUST US</p>
+        <h2 class="section__title">Why choose KORA</h2>
+        <p class="section__lead">Phone-verified accounts, transparent bidding, privacy-first design — we label live, pilot and planned features clearly, and we report accuracy openly rather than over-claiming.</p>
+
+        <div class="trust">
+          <article class="tcard glass"><span class="itile"><svg class="ico" aria-hidden="true"><use href="#i-phone-check"/></svg></span><h4>Phone-verified signup</h4><p>OTP confirms your mobile number at registration.</p></article>
+          <article class="tcard glass"><span class="itile"><svg class="ico" aria-hidden="true"><use href="#i-file"/></svg></span><h4>Optional business GST</h4><p>GST is optional — it does not mean every buyer is GST-verified.</p></article>
+          <article class="tcard glass"><span class="itile"><svg class="ico" aria-hidden="true"><use href="#i-rupee"/></svg></span><h4>Transparent pricing</h4><p>Open bidding — no hidden middleman margins.</p></article>
+          <article class="tcard glass"><span class="itile"><svg class="ico" aria-hidden="true"><use href="#i-sparkles"/></svg></span><h4>AI recommendations</h4><p>Grounded advice with honest uncertainty — ranges, not false precision.</p></article>
+          <article class="tcard glass"><span class="itile"><svg class="ico" aria-hidden="true"><use href="#i-lock"/></svg></span><h4>Secure platform</h4><p>Role-based access and protected transactions.</p></article>
+          <article class="tcard glass"><span class="itile"><svg class="ico" aria-hidden="true"><use href="#i-shield-check"/></svg></span><h4>Privacy-first</h4><p>Your data is never sold; consent-based, aligned with the DPDP Act, 2023.</p></article>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===================== OPERATOR ===================== -->
+    <section class="section section--deep" id="operator">
+      <div class="container operator">
+        <div class="operator__text">
+          <p class="eyebrow eyebrow--onink"><span class="eyebrow__rule"></span>WHO WE ARE</p>
+          <h2 class="section__title section__title--light">Built by the team at IIM Sirmaur</h2>
+          <p class="section__lead section__lead--light">KORA is developed by undergraduate students of IIM Sirmaur as a project under the “Introduction to Programming Language” course — a working farm-to-buyer marketplace studying AI demand forecasting, pooled logistics and transparent price discovery with FPOs and bulk buyers.</p>
+          <div class="emails">
+            <a href="mailto:bms25051@iimsirmaur.ac.in">bms25051@iimsirmaur.ac.in</a>
+            <a href="mailto:bms25027@iimsirmaur.ac.in">bms25027@iimsirmaur.ac.in</a>
+            <a href="mailto:bms25040@iimsirmaur.ac.in">bms25040@iimsirmaur.ac.in</a>
+            <a href="mailto:bms25044@iimsirmaur.ac.in">bms25044@iimsirmaur.ac.in</a>
+            <a href="mailto:bms25053@iimsirmaur.ac.in">bms25053@iimsirmaur.ac.in</a>
+            <a href="mailto:bms25054@iimsirmaur.ac.in">bms25054@iimsirmaur.ac.in</a>
+            <a href="mailto:bms25055@iimsirmaur.ac.in">bms25055@iimsirmaur.ac.in</a>
+            <a href="mailto:bms25062@iimsirmaur.ac.in">bms25062@iimsirmaur.ac.in</a>
+          </div>
+        </div>
+        <div class="operator__card glass glass--strong">
+          <span class="itile itile--gold itile--lg"><svg class="ico" aria-hidden="true"><use href="#i-sprout"/></svg></span>
+          <strong>IIM Sirmaur</strong>
+          <span>STUDENT PROJECT TEAM</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===================== FINAL CTA ===================== -->
+    <section class="cta">
+      <div class="cta__bg" aria-hidden="true"></div>
+      <div class="rain" aria-hidden="true" data-rain></div>
+      <div class="rings" aria-hidden="true" data-rings></div>
+      <div class="container cta__inner">
+        <h2 class="cta__title">Join India's agricultural intelligence platform</h2>
+        <p class="cta__lead">Whether you grow, buy, or supply — experience intelligence, commerce, and services in one trusted ecosystem.</p>
+        <div class="cta__actions">
+          <a href="#ecosystem" class="btn btn--glass btn--lg">Explore the ecosystem</a>
+          <a href="login.html" class="btn btn--gold btn--lg">Experience KORA AI</a>
+          <a href="mailto:bms25051@iimsirmaur.ac.in" class="btn btn--glass-soft btn--lg">Request a demo</a>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- ===================== FOOTER ===================== -->
+  <footer class="footer">
+    <div class="container footer__inner">
+      <div class="footer__brand">
+        <a href="#top" class="brand brand--light">
+          <span class="brand__mark" aria-hidden="true">
+            <svg viewBox="0 0 48 48" width="28" height="28" role="img">
+              <circle cx="24" cy="24" r="22" fill="#fbf4e4"/>
+              <path d="M4 30c7 5 13 5 20 1s13-4 20 1v12H4Z" fill="#c9a227"/>
+              <path d="M24 26c0-6 4-9 10-10-1 7-4 10-10 10Z" fill="#713D2B"/>
+              <path d="M24 26c0-5-3-8-8-9 1 6 3 8 8 9Z" fill="#8a5636"/>
+              <path d="M24 30V16" stroke="#713D2B" stroke-width="2.4" stroke-linecap="round"/>
+            </svg>
+          </span>
+          <span class="brand__name">KORA</span>
+        </a>
+        <p>Public pilot: core login, registration, listings, bids and service requests are live. Payments and some dashboards use simulated or sample data until banking integrations complete.</p>
+      </div>
+      <div class="footer__col">
+        <h5>Platform</h5>
+        <a href="register.html#farmer">Farmer registration</a>
+        <a href="register.html#buyer">Buyer registration</a>
+        <a href="register.html#supplier">Supplier registration</a>
+        <a href="login.html">Login</a>
+      </div>
+      <div class="footer__col">
+        <h5>Legal</h5>
+        <a href="terms.html">Terms of Use</a>
+        <a href="privacy.html">Privacy Policy</a>
+        <a href="delete-account.html">Delete account</a>
+      </div>
+      <div class="footer__col">
+        <h5>Project</h5>
+        <a href="mailto:bms25051@iimsirmaur.ac.in">Contact the team</a>
+        <span class="footer__hours">Undergraduate project · IIM Sirmaur<br>“Introduction to Programming Language”</span>
+      </div>
+    </div>
+    <div class="footer__bar">
+      <div class="container">© 2026 KORA · IIM Sirmaur student project. Building India's agricultural intelligence infrastructure.</div>
+    </div>
+  </footer>
+
+  <script src="js/local-api.js"></script>
+
+  <script src="js/api.js"></script>
+  <script src="js/translations.js"></script>
+  <script src="js/i18n.js"></script>
+  <script src="js/main.js"></script>
+  <script src="js/motion.js"></script>
+  <script src="js/field.js"></script>
+</body>
+</html>

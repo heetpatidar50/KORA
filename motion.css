@@ -1,0 +1,188 @@
+/* =========================================================
+   KORA motion. The hero's field, water, birds, mist and pollen are drawn by
+   js/field.js on two canvases; this file holds the layers they sit in and the
+   motion of the rest of the page:
+   - one easing family everywhere: cubic-bezier(.16,1,.3,1) for arrivals,
+     cubic-bezier(.45,0,.55,1) for loops, so movement feels of a piece
+   - the hero's words arrive in sequence on load
+   - sections rise into place as they scroll in, children one after another
+   - glass cards tilt toward the pointer and settle back on a spring
+   - bubbles rise and sway, a droplet of light runs down the architecture flow,
+     sprouts grow with a little overshoot and unfurl their leaves, rain falls in
+     three depths and splashes, the final price glints
+   Everything pauses off screen (.is-paused) and stops for reduced motion.
+   ========================================================= */
+:root{--ease-out:cubic-bezier(.16,1,.3,1);--ease-loop:cubic-bezier(.45,0,.55,1);--ease-spring:cubic-bezier(.34,1.45,.64,1)}
+
+/* ---------- water light behind the light sections ----------
+   The blobs used to be blurred with filter:blur() and mixed with multiply/soft-light;
+   both force a repaint of the whole fixed layer (and of every glass pane above it)
+   on each frame. Now each blob is a soft radial gradient that fades to nothing on
+   its own, in normal blending, and moves by transform only, so the compositor
+   slides finished layers around without repainting them. */
+/* the page's light used to be a background-attachment:fixed gradient on <body>, which repaints the
+   whole page on every scroll step; it now lives on the fixed .aqua layer, which the compositor
+   simply keeps in place */
+.aqua{contain:strict;
+  background:
+    radial-gradient(1200px 720px at 82% -8%,#d7ecef 0%,transparent 58%),
+    radial-gradient(1000px 640px at -12% 14%,#f1e7d2 0%,transparent 55%),
+    radial-gradient(900px 700px at 50% 120%,#dfeceb 0%,transparent 60%),
+    linear-gradient(180deg,var(--paper),#eaf1ee 55%,var(--paper))}
+.aqua.is-covered{visibility:hidden}
+.aqua.is-covered *{animation-play-state:paused}
+.aqua__blob{filter:none;mix-blend-mode:normal;will-change:transform;animation-timing-function:var(--ease-loop);
+  width:var(--s);height:var(--s);margin:calc(var(--s) * -.2)}
+.aqua__blob--1{--s:680px;background:radial-gradient(closest-side,rgba(64,160,184,.34),rgba(64,160,184,.16) 45%,rgba(64,160,184,0));opacity:1}
+.aqua__blob--2{--s:760px;background:radial-gradient(closest-side,rgba(214,176,64,.26),rgba(214,176,64,.11) 45%,rgba(214,176,64,0));opacity:1}
+.aqua__blob--3{--s:600px;background:radial-gradient(closest-side,rgba(150,84,58,.17),rgba(150,84,58,.07) 45%,rgba(150,84,58,0));opacity:1}
+.aqua__blob--4{--s:640px;right:18%;top:-120px;background:radial-gradient(closest-side,rgba(96,164,104,.2),rgba(96,164,104,.08) 45%,rgba(96,164,104,0));opacity:1;animation-delay:-6s}
+.aqua__caustics{position:absolute;inset:-20%;opacity:.32;will-change:transform;
+  background:
+    radial-gradient(40% 30% at 20% 30%,rgba(255,255,255,.7),transparent 60%),
+    radial-gradient(35% 25% at 70% 60%,rgba(255,255,255,.55),transparent 60%),
+    radial-gradient(30% 22% at 45% 85%,rgba(255,255,255,.5),transparent 60%);
+  animation:caustics 26s var(--ease-loop) infinite alternate}
+@keyframes caustics{0%{transform:translate(0,0) rotate(0)}100%{transform:translate(4%,-3%) rotate(6deg)}}
+
+/* ---------- hero layers ---------- */
+.hero{padding-bottom:250px}
+/* the land under the crops runs on into the next section instead of stopping at a line */
+.hero + .section::before{content:"";position:absolute;left:0;right:0;top:0;height:200px;pointer-events:none;
+  background:linear-gradient(180deg,var(--paper) 0%,rgba(243,239,230,.7) 38%,rgba(243,239,230,0) 100%)}
+.hero + .section > .container{position:relative}
+.hero__bg{will-change:transform}
+.sky-canvas{position:absolute;left:0;top:0;width:100%;height:64%;pointer-events:none;z-index:0}
+.hero__sky{position:absolute;inset:0;pointer-events:none;overflow:hidden;z-index:0}
+.hero__sun{position:absolute;right:8%;top:-120px;width:520px;height:520px;border-radius:50%;
+  background:radial-gradient(circle,rgba(255,230,160,.4),rgba(255,210,120,.12) 40%,transparent 66%);
+  animation:sun 12s var(--ease-loop) infinite alternate}
+@keyframes sun{from{transform:scale(1);opacity:.75}to{transform:scale(1.07);opacity:1}}
+.hero__inner{z-index:2}
+.hero__ground{position:absolute;left:0;right:0;bottom:-1px;height:220px;pointer-events:none;z-index:1}
+.tubewell{position:absolute;bottom:0;width:190px;height:170px;z-index:2;overflow:visible}
+.field-canvas{position:absolute;left:0;bottom:0;width:100%;z-index:3;display:block}
+
+/* the hero's words arrive one after another on load */
+.hero__inner>*{animation:hero-in 1.1s var(--ease-out) both}
+.hero__inner>:nth-child(1){animation-delay:.1s}
+.hero__inner>:nth-child(2){animation-delay:.2s}
+.hero__inner>:nth-child(3){animation-delay:.32s}
+.hero__inner>:nth-child(4){animation-delay:.44s}
+.hero__inner>:nth-child(5){animation-delay:.54s}
+.hero__inner>:nth-child(6){animation-delay:.62s}
+.hero__inner>:nth-child(7){animation-delay:.7s}
+@keyframes hero-in{from{opacity:0;transform:translateY(22px)}to{opacity:1;transform:none}}
+
+/* ---------- sections rise into place (children staggered by motion.js) ---------- */
+[data-reveal]{opacity:0;transform:translateY(34px) scale(.985);
+  transition:opacity .9s var(--ease-out),transform 1.15s var(--ease-out);transition-delay:var(--rd,0s)}
+[data-reveal].is-visible{opacity:1;transform:none}
+
+/* ---------- glass cards tilt toward the pointer ---------- */
+.tilt{transform-style:preserve-3d;transition:transform .7s var(--ease-spring),box-shadow .4s ease}
+.tilt.is-tilting{transform:perspective(900px) rotateX(var(--rx,0deg)) rotateY(var(--ry,0deg)) translateY(-6px);transition:transform .14s ease-out,box-shadow .3s ease}
+
+/* ---------- why now: bubbles rise, sway and swell ---------- */
+.bubbles{position:absolute;inset:0;overflow:hidden;pointer-events:none}
+.bubbles i{position:absolute;bottom:-40px;animation:bubble-rise var(--t,16s) cubic-bezier(.4,0,.8,.7) infinite;animation-delay:var(--dl,0s)}
+.bubbles b{display:block;width:var(--s,14px);height:var(--s,14px);border-radius:50%;
+  background:radial-gradient(circle at 32% 28%,rgba(255,255,255,.75),rgba(255,255,255,.12) 32%,rgba(143,208,221,.08) 62%,rgba(143,208,221,.22));
+  box-shadow:inset 0 0 0 1px rgba(255,255,255,.25),inset -2px -3px 6px rgba(143,208,221,.25);
+  animation:bubble-sway var(--w,2.4s) var(--ease-loop) infinite alternate}
+@keyframes bubble-rise{0%{transform:translateY(0) scale(.7);opacity:0}8%{opacity:.95}85%{opacity:.8}100%{transform:translateY(-118vh) scale(1.15);opacity:0}}
+@keyframes bubble-sway{from{transform:translateX(calc(var(--x,10px) * -1))}to{transform:translateX(var(--x,10px))}}
+.section--deep>.container,.section--impact>.container,.cta__inner{position:relative;z-index:1}
+
+.stat__num--ai .ico{animation:breathe 3.4s var(--ease-loop) infinite}
+@keyframes breathe{50%{transform:scale(1.1);filter:drop-shadow(0 0 10px rgba(201,162,39,.7))}}
+
+/* ---------- live badges and the hero dot pulse softly ---------- */
+.badge--live{animation:live 2.4s var(--ease-out) infinite}
+@keyframes live{0%{box-shadow:0 0 0 0 rgba(47,147,171,.55)}100%{box-shadow:0 0 0 12px rgba(47,147,171,0)}}
+.eyebrow .dot{animation:live 2.4s var(--ease-out) infinite}
+
+/* ---------- architecture: a droplet of light runs down the flow, each node lights as it passes ---------- */
+.flow{position:relative}
+.flow__track{position:absolute;left:50%;top:26px;bottom:26px;width:2px;margin-left:-1px;z-index:0;border-radius:2px;
+  background:linear-gradient(to bottom,rgba(143,208,221,0),rgba(143,208,221,.35) 8%,rgba(143,208,221,.35) 92%,rgba(143,208,221,0))}
+.flow__drop{position:absolute;left:50%;top:0;width:14px;height:14px;margin:-7px 0 0 -7px;border-radius:50%;
+  background:radial-gradient(circle,#fff 0,#bfe8f5 35%,rgba(47,147,171,0) 70%);box-shadow:0 0 18px 6px rgba(120,200,225,.55);
+  animation:drop-run 6s linear infinite}
+.flow__drop::after{content:"";position:absolute;left:50%;bottom:50%;width:2px;height:46px;margin-left:-1px;border-radius:2px;
+  background:linear-gradient(to top,rgba(191,232,245,.9),rgba(191,232,245,0))}
+@keyframes drop-run{0%{top:0;opacity:0}4%{opacity:1}83.3%{top:100%;opacity:1}90%,100%{top:100%;opacity:0}}
+.flow__node,.flow__arrow{position:relative;z-index:1}
+.flow__node{animation:node-glow 6s var(--ease-loop) infinite;animation-delay:calc(var(--i,0) * 1s)}
+@keyframes node-glow{0%,100%{box-shadow:0 26px 54px -28px rgba(0,0,0,.6),inset 0 1px 1px rgba(255,255,255,.4)}
+  4%{box-shadow:0 0 0 1px rgba(170,225,240,.75),0 0 40px -2px rgba(47,147,171,.8),inset 0 1px 1px rgba(255,255,255,.7)}
+  16%{box-shadow:0 26px 54px -28px rgba(0,0,0,.6),inset 0 1px 1px rgba(255,255,255,.4)}}
+.flow__arrow{opacity:.55}
+
+/* ---------- impact: sprouts grow with a little overshoot, unfurl, then sway ---------- */
+.sprouts{position:absolute;left:0;right:0;bottom:0;height:120px;pointer-events:none;display:flex;justify-content:space-around;align-items:flex-end;padding:0 2%;overflow:hidden}
+/* a strip of dark soil they grow out of */
+.sprouts::after{content:"";position:absolute;left:0;right:0;bottom:0;height:16px;
+  background:radial-gradient(60% 100% at 50% 100%,rgba(38,24,16,.55),transparent 70%),linear-gradient(0deg,rgba(38,24,16,.5),rgba(38,24,16,0))}
+.sprout{width:62px;height:var(--h,80px);transform-origin:50% 100%;transform:scaleY(0);transition:transform 1.6s var(--ease-spring);transition-delay:var(--dl,0s)}
+.sprout svg{width:100%;height:100%;overflow:visible}
+.sprout path.stem{fill:none;stroke:#7aa94c;stroke-width:2.6;stroke-linecap:round}
+.sprout .leaf{transform-box:fill-box;transform:scale(0);transition:transform 1.2s var(--ease-spring);transition-delay:calc(var(--dl,0s) + .6s)}
+.sprout .leaf path{fill:#86b85e}
+.sprout .leaf--t path{fill:#9ccb6c}
+.sprout .leaf path.rib{fill:none;stroke:rgba(236,248,214,.55);stroke-width:.9;stroke-linecap:round}
+.sprout .leaf--l{transform-origin:100% 60%}
+.sprout .leaf--r{transform-origin:0 70%}
+.sprout .leaf--t{transform-origin:50% 100%;transition-delay:calc(var(--dl,0s) + .9s)}
+.sprouts.is-grown .sprout{transform:scaleY(1)}
+.sprouts.is-grown .sprout .leaf{transform:scale(1)}
+/* the sway lives on the drawing inside, so it starts while the sprout is still flat and never snaps */
+.sprout svg{transform-origin:50% 100%}
+.sprouts.is-grown .sprout svg{animation:sprout-sway var(--d,4.5s) var(--ease-loop) infinite alternate;animation-delay:var(--sd,0s)}
+@keyframes sprout-sway{from{transform:rotate(calc(var(--a,3deg) * -1))}to{transform:rotate(var(--a,3deg))}}
+#impact{padding-bottom:150px}
+
+/* ---------- closing band: rain in three depths, splashes and rings ---------- */
+.rain{position:absolute;inset:0;overflow:hidden;pointer-events:none}
+.rain i{position:absolute;top:-80px;width:var(--w,1.4px);height:var(--l,46px);border-radius:2px;
+  background:linear-gradient(to bottom,rgba(191,232,245,0),rgba(214,240,250,var(--o,.7)));
+  transform:rotate(13deg);animation:rain var(--t,1.1s) linear infinite;animation-delay:var(--dl,0s)}
+@keyframes rain{to{transform:translate(calc(var(--fall,120vh) * -.23),var(--fall,120vh)) rotate(13deg)}}
+.rings{position:absolute;left:0;right:0;bottom:22px;height:60px;pointer-events:none}
+.rings i{position:absolute;bottom:0;width:84px;height:18px;margin-left:-42px;border-radius:50%;border:1.4px solid rgba(191,232,245,.5);opacity:0;animation:ring 2.8s var(--ease-out) infinite;animation-delay:var(--dl,0s)}
+.rings i::after{content:"";position:absolute;inset:4px 16px;border-radius:50%;border:1px solid rgba(191,232,245,.45);opacity:.8}
+@keyframes ring{0%{transform:scale(.15);opacity:.9}100%{transform:scale(1.5);opacity:0}}
+.rings s{position:absolute;bottom:4px;width:2px;height:10px;border-radius:2px;background:rgba(214,240,250,.8);opacity:0;transform-origin:50% 100%;animation:splash 2.8s var(--ease-out) infinite;animation-delay:var(--dl,0s)}
+@keyframes splash{0%{opacity:0;transform:translateY(0) rotate(var(--r,0deg)) scaleY(.2)}6%{opacity:.9;transform:translateY(-8px) rotate(var(--r,0deg)) scaleY(1)}18%,100%{opacity:0;transform:translateY(-14px) rotate(var(--r,0deg)) scaleY(.3)}}
+
+/* ---------- breakdown: the final price glints ---------- */
+.breakdown__total td:last-child{background:linear-gradient(90deg,var(--gold-dark) 35%,#f3dc86 50%,var(--gold-dark) 65%);-webkit-background-clip:text;background-clip:text;color:transparent;background-size:300% 100%;animation:glint 5s var(--ease-loop) infinite}
+@keyframes glint{0%{background-position:100% 0}60%,100%{background-position:0 0}}
+
+/* ---------- pause what is off screen; stop for reduced motion ---------- */
+.is-paused,.is-paused *,.is-paused ::before,.is-paused ::after{animation-play-state:paused!important}
+@media (prefers-reduced-motion:reduce){
+  .hero__sky,.bubbles,.rain,.rings,.aqua__caustics,.flow__drop{display:none}
+  .hero__inner>*,.sprouts .sprout,.sprouts .sprout svg,.flow__node,.badge--live,.eyebrow .dot,.stat__num--ai .ico,.breakdown__total td:last-child{animation:none!important}
+  .sprout,.sprout .leaf{transform:none;transition:none}
+  [data-reveal]{opacity:1;transform:none;transition:none}
+  .tilt,.tilt.is-tilting{transform:none;transition:none}
+  .breakdown__total td:last-child{color:var(--gold-dark);background:none}
+}
+
+/* ---------- smaller screens ---------- */
+@media (max-width:1040px){
+  .hero{padding-bottom:230px}
+  .hero__ground{height:210px}
+  .tubewell{width:150px;height:134px}
+}
+@media (max-width:640px){
+  .hero{padding-bottom:170px}
+  .hero + .section::before{height:140px}
+  .hero__ground{height:170px}
+  .tubewell{width:118px;height:106px}
+  .hero__sun{width:320px;height:320px;top:-90px}
+  .sprouts{height:80px}
+  .sprout{width:42px}
+  #impact{padding-bottom:120px}
+}

@@ -1,0 +1,142 @@
+/* =========================================================
+   KORA liquid glass: a thicker, more physical glass than the frosted cards.
+   - stronger blur, saturation and a touch of brightness (light bends and brightens)
+   - a bright rim that fades round the edge (a light-catching bevel), drawn as a
+     gradient border so it is brighter where light hits, top-left
+   - inner glow and a faint red/blue fringe at the edge (refraction)
+   - a specular highlight that follows the pointer (--mx, --my set by motion.js)
+   - optional true refraction (SVG displacement) on Chromium desktops: .lg-refract
+   Loaded after styles.css on every page.
+   ========================================================= */
+:root{
+  --lg-blur:18px;
+  --lg-tint:linear-gradient(135deg,rgba(255,255,255,.34),rgba(255,255,255,.1) 48%,rgba(255,255,255,.18));
+  --lg-rim:linear-gradient(140deg,rgba(255,255,255,.95),rgba(255,255,255,.28) 26%,rgba(255,255,255,.06) 52%,rgba(255,255,255,.2) 74%,rgba(255,255,255,.8));
+  --lg-depth:
+    inset 0 1px 1px rgba(255,255,255,.85),
+    inset 0 -1px 1px rgba(255,255,255,.18),
+    inset 0 0 22px rgba(255,255,255,.16),
+    inset 10px 10px 20px -18px rgba(255,255,255,.9),
+    inset -10px -12px 22px -20px rgba(14,63,80,.35),
+    inset 1px 0 0 rgba(255,140,120,.14),
+    inset -1px 0 0 rgba(110,180,255,.18);
+  --lg-drop:0 26px 54px -30px rgba(8,26,30,.5),0 3px 10px -4px rgba(8,26,30,.14);
+}
+@media (max-width:640px){:root{--lg-blur:12px}}
+
+.glass{
+  background:var(--lg-tint);
+  backdrop-filter:blur(var(--lg-blur)) saturate(185%) brightness(1.05) contrast(1.04);
+  -webkit-backdrop-filter:blur(var(--lg-blur)) saturate(185%) brightness(1.05) contrast(1.04);
+  border:1px solid rgba(255,255,255,.18);
+  box-shadow:var(--lg-drop),var(--lg-depth);
+  isolation:isolate;
+}
+/* the bevel: a 1.5px gradient rim, bright where the light falls */
+.glass::before{
+  content:"";position:absolute;inset:-1px;border-radius:inherit;padding:1.5px;pointer-events:none;z-index:0;
+  background:var(--lg-rim);
+  -webkit-mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);
+  -webkit-mask-composite:xor;mask:linear-gradient(#000 0 0) content-box exclude,linear-gradient(#000 0 0);
+}
+/* the specular: a soft light that follows the pointer, plus a sheen across the top */
+.glass::after{
+  background:
+    radial-gradient(260px circle at var(--mx,22%) var(--my,0%),rgba(255,255,255,.42),rgba(255,255,255,0) 62%),
+    linear-gradient(180deg,rgba(255,255,255,.26),rgba(255,255,255,0) 34%);
+  opacity:.9;transition:opacity .3s ease;
+}
+.glass--strong{background:linear-gradient(135deg,rgba(255,255,255,.48),rgba(255,255,255,.16) 50%,rgba(255,255,255,.26))}
+
+/* glass on the dark water and clay sections: darker body, same light */
+.section--deep .glass,.section--impact .glass,.cta .glass,.hero .glass{
+  background:linear-gradient(135deg,rgba(255,255,255,.16),rgba(255,255,255,.04) 50%,rgba(255,255,255,.09));
+  border-color:rgba(255,255,255,.1);
+  box-shadow:0 26px 54px -28px rgba(0,0,0,.6),
+    inset 0 1px 1px rgba(255,255,255,.4),inset 0 -1px 1px rgba(255,255,255,.08),
+    inset 0 0 24px rgba(255,255,255,.06),inset 10px 10px 20px -18px rgba(255,255,255,.5),
+    inset 1px 0 0 rgba(255,140,120,.12),inset -1px 0 0 rgba(110,180,255,.16);
+}
+.section--deep .glass::before,.section--impact .glass::before,.cta .glass::before,.hero .glass::before{
+  background:linear-gradient(140deg,rgba(255,255,255,.7),rgba(255,255,255,.14) 28%,rgba(255,255,255,.03) 54%,rgba(255,255,255,.1) 76%,rgba(255,255,255,.5))}
+.section--deep .glass::after,.section--impact .glass::after,.cta .glass::after,.hero .glass::after{
+  background:
+    radial-gradient(240px circle at var(--mx,22%) var(--my,0%),rgba(255,255,255,.2),rgba(255,255,255,0) 62%),
+    linear-gradient(180deg,rgba(255,255,255,.12),rgba(255,255,255,0) 32%)}
+.section--deep .glass--strong,.hero .glass--strong,.cta .glass--strong{
+  background:linear-gradient(135deg,rgba(255,255,255,.22),rgba(255,255,255,.07) 50%,rgba(255,255,255,.13))}
+.flow__node--accent{background:linear-gradient(135deg,#e2c04a,var(--gold) 55%,#b8921d)!important}
+
+/* the floating nav: the clearest piece of glass on the page */
+.nav{
+  background:linear-gradient(135deg,rgba(255,255,255,.42),rgba(255,255,255,.16) 50%,rgba(255,255,255,.28));
+  backdrop-filter:blur(22px) saturate(190%) brightness(1.06);-webkit-backdrop-filter:blur(22px) saturate(190%) brightness(1.06);
+  border:1px solid rgba(255,255,255,.2);position:relative;isolation:isolate;
+  box-shadow:0 22px 50px -28px rgba(8,26,30,.55),inset 0 1px 1px rgba(255,255,255,.9),inset 0 -1px 1px rgba(255,255,255,.2),
+    inset 0 0 18px rgba(255,255,255,.18),inset 1px 0 0 rgba(255,140,120,.14),inset -1px 0 0 rgba(110,180,255,.18);
+  transition:background .35s ease,box-shadow .35s ease;
+}
+.nav::before{content:"";position:absolute;inset:-1px;border-radius:inherit;padding:1.5px;pointer-events:none;z-index:-1;background:var(--lg-rim);
+  -webkit-mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);-webkit-mask-composite:xor;mask:linear-gradient(#000 0 0) content-box exclude,linear-gradient(#000 0 0)}
+.nav::after{display:block!important;content:"";position:absolute;inset:0;border-radius:inherit;pointer-events:none;z-index:-1;
+  background:radial-gradient(320px circle at var(--mx,20%) var(--my,0%),rgba(255,255,255,.4),rgba(255,255,255,0) 60%),linear-gradient(180deg,rgba(255,255,255,.3),transparent 50%)}
+/* while the nav floats over the dark hero photo its words turn light, so they can be read */
+.nav-wrap.is-over-hero .nav{background:linear-gradient(135deg,rgba(255,255,255,.2),rgba(255,255,255,.05) 50%,rgba(255,255,255,.12))}
+.nav-wrap.is-over-hero .nav__links a{color:rgba(255,255,255,.88)}
+.nav-wrap.is-over-hero .nav__links a:hover{color:#fff;background:rgba(255,255,255,.14)}
+/* the section you're reading, marked in the nav: clay on the light glass, white on the dark */
+.nav__links a.is-current{color:var(--clay);background:rgba(113,61,43,.09)}
+.nav-wrap.is-over-hero .nav__links a.is-current{color:#fff;background:rgba(255,255,255,.18);box-shadow:inset 0 1px 0 rgba(255,255,255,.3)}
+.nav-wrap.is-over-hero .brand{color:#fff}
+.nav-wrap.is-over-hero .btn--ghost-ink{color:#fff;border-color:rgba(255,255,255,.55)}
+.nav-wrap.is-over-hero .btn--ghost-ink:hover{background:rgba(255,255,255,.14)}
+.nav-wrap.is-over-hero .lang select{color:#fff;border-color:rgba(255,255,255,.5);background-color:rgba(255,255,255,.12);
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%23ffffff' stroke-width='3'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E")}
+.nav-wrap.is-over-hero .lang__ico{color:#fff}
+.nav-wrap.is-over-hero .nav__burger span{background:#fff}
+.lang select option{color:#38291f;background:#fff}
+
+/* glass buttons: a bubble with a bright rim and a liquid shine that sweeps across on hover */
+.btn--glass,.btn--glass-soft{position:relative;overflow:hidden;isolation:isolate;
+  background:linear-gradient(135deg,rgba(255,255,255,.3),rgba(255,255,255,.08) 55%,rgba(255,255,255,.18));
+  backdrop-filter:blur(14px) saturate(180%) brightness(1.08);-webkit-backdrop-filter:blur(14px) saturate(180%) brightness(1.08);
+  border-color:rgba(255,255,255,.55);
+  box-shadow:inset 0 1px 1px rgba(255,255,255,.75),inset 0 -2px 6px rgba(255,255,255,.12),inset 0 0 14px rgba(255,255,255,.12),0 14px 30px -16px rgba(0,0,0,.55)}
+.btn--glass-soft{background:linear-gradient(135deg,rgba(255,255,255,.18),rgba(255,255,255,.04) 55%,rgba(255,255,255,.1));border-color:rgba(255,255,255,.4)}
+.btn--glass::before,.btn--glass-soft::before,.btn--gold::before{content:"";position:absolute;top:0;bottom:0;left:-60%;width:45%;z-index:-1;pointer-events:none;
+  background:linear-gradient(105deg,transparent,rgba(255,255,255,.5),transparent);transform:skewX(-20deg);transition:left .7s ease}
+.btn--gold{position:relative;overflow:hidden;isolation:isolate;box-shadow:inset 0 1px 1px rgba(255,255,255,.6),inset 0 -2px 4px rgba(120,80,0,.2),0 12px 26px -12px rgba(201,162,39,.85)}
+@media (hover:hover){.btn--glass:hover::before,.btn--glass-soft:hover::before,.btn--gold:hover::before{left:120%}}
+
+/* icon tiles: small glass pebbles */
+.itile{background:linear-gradient(145deg,rgba(255,255,255,.72),rgba(255,255,255,.18));
+  box-shadow:inset 0 1px 1px rgba(255,255,255,.95),inset 0 -3px 6px rgba(14,63,80,.08),inset 3px 3px 8px -6px #fff,0 10px 20px -12px rgba(14,63,80,.6)}
+
+/* true refraction (Chromium on a desktop): the backdrop is bent by an SVG displacement map */
+/* only on the nav, and only while it floats over the still parts of the page (over the moving hero it would
+   have to refract every frame) */
+.lg-refract .nav-wrap:not(.is-over-hero) .nav{
+  backdrop-filter:url(#lg-refract) blur(14px) saturate(190%) brightness(1.06);
+}
+
+@media (prefers-reduced-transparency:reduce){
+  .glass,.nav,.btn--glass,.btn--glass-soft{backdrop-filter:none;-webkit-backdrop-filter:none;background:rgba(255,255,255,.86)}
+  .section--deep .glass,.section--impact .glass,.cta .glass,.hero .glass{background:rgba(14,47,60,.9)}
+}
+
+/* the floating nav on small phones: logo, language and menu only (Get started lives in the menu) */
+@media (max-width:640px){
+  .nav{gap:.5rem;padding:0 6px 0 12px;height:56px}
+  .brand{font-size:1.12rem;letter-spacing:.1em;gap:.45rem}
+  .brand__mark{width:28px;height:28px}
+  .nav__actions{gap:.35rem;margin-left:auto}
+  .nav__actions .btn--gold{display:none}
+  .lang select{max-width:122px;font-size:.78rem;padding:.45rem 1.5rem .45rem 1.85rem}
+}
+@media (max-width:360px){.lang select{max-width:112px;padding-right:1.25rem}.brand{font-size:1rem;letter-spacing:.06em}}
+
+/* footer columns fold on tablets and phones (they used to push the page wider than the screen) */
+@media (max-width:1040px){.footer__inner{grid-template-columns:1fr 1fr;gap:1.6rem 2rem}}
+@media (max-width:640px){.footer__inner{grid-template-columns:1fr}}
+.footer__col a,.footer__brand p,.emails a{overflow-wrap:anywhere}
+html,body{max-width:100%}
