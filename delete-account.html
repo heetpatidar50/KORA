@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="theme-color" content="#713D2B" />
+  <title>Delete account · KORA</title>
+  <link rel="icon" href="images/kora-logo.jpg" />
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@500;600;700;800;900&family=Noto+Sans+Devanagari:wght@400;600;700;800&family=Noto+Sans+Telugu:wght@400;600;700;800&family=Noto+Sans+Tamil:wght@400;600;700;800&family=Noto+Sans+Gujarati:wght@400;600;700;800&family=Noto+Sans+Gurmukhi:wght@400;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="css/styles.css" />
+  <link rel="stylesheet" href="css/liquid.css" />
+  <link rel="stylesheet" href="css/app.css" />
+</head>
+<body>
+  <div class="aqua" aria-hidden="true"><span class="aqua__blob aqua__blob--1"></span><span class="aqua__blob aqua__blob--2"></span></div>
+
+  <div class="lang-float"><label class="lang"><select data-lang-select aria-label="Language"><option value="en">English</option><option value="hi">हिंदी</option><option value="te">తెలుగు</option><option value="ta">தமிழ்</option><option value="gu">ગુજરાતી</option><option value="mr">मराठी</option><option value="pa">ਪੰਜਾਬੀ</option></select></label></div>
+
+  <div class="auth-shell">
+    <a href="index.html" class="auth-top">
+      <span class="brand__mark"><svg viewBox="0 0 48 48" width="34" height="34"><circle cx="24" cy="24" r="22" fill="#fbf4e4"/><path d="M4 30c7 5 13 5 20 1s13-4 20 1v12H4Z" fill="#c9a227"/><path d="M24 26c0-6 4-9 10-10-1 7-4 10-10 10Z" fill="#713D2B"/><path d="M24 26c0-5-3-8-8-9 1 6 3 8 8 9Z" fill="#8a5636"/><path d="M24 30V16" stroke="#713D2B" stroke-width="2.4" stroke-linecap="round"/></svg></span>
+      KORA
+    </a>
+    <div class="auth-card glass glass--strong">
+      <h1>Delete account</h1>
+      <p class="sub">This permanently removes your account and all related data — your listings, bids and service requests. This cannot be undone.</p>
+      <div class="msg" id="msg"></div>
+      <div id="who" class="otp-hint hidden"></div>
+      <button class="btn btn--block" id="deleteBtn" style="background:#9a2e22;color:#fff;border-color:#9a2e22">Permanently delete my account</button>
+      <p class="auth-foot"><a href="dashboard.html">← Back to dashboard</a></p>
+    </div>
+  </div>
+
+  <script src="js/translations.js"></script>
+  <script src="js/i18n.js"></script>
+  <script src="js/local-api.js"></script>
+  <script src="js/api.js"></script>
+  <script>
+    (function () {
+      var api = window.KORA, msg = document.getElementById("msg"), who = document.getElementById("who");
+      (async function () {
+        try {
+          var r = await api.get("/me");
+          if (!r.user) { location.href = "login.html"; return; }
+          who.classList.remove("hidden");
+          var roles = {farmer:"Farmer", buyer:"Buyer", supplier:"Supplier"};
+          who.innerHTML = "<span>Signed in:</span> " + api.esc(r.user.name) + " · <span>" + roles[r.user.role] + "</span>";
+        } catch (e) { location.href = "login.html"; }
+      })();
+      document.getElementById("deleteBtn").addEventListener("click", async function () {
+        /* two presses: the first asks, the second deletes (works where pop-up boxes are blocked) */
+        var b = document.getElementById("deleteBtn");
+        if (!b.dataset.armed) {
+          b.dataset.armed = "1";
+          msg.className = "msg err";
+          msg.textContent = window.KORAI18N.t("Delete your KORA account and all related data? This cannot be undone.") + " " + window.KORAI18N.t("Press the button again to confirm.");
+          return;
+        }
+        try {
+          await api.del("/account", {});
+          msg.className = "msg ok"; msg.textContent = "Account deleted. Redirecting…";
+          setTimeout(function () { location.href = "index.html"; }, 1200);
+        } catch (e) { msg.className = "msg err"; msg.textContent = e.message; }
+      });
+    })();
+  </script>
+</body>
+</html>
