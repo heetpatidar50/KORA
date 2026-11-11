@@ -1,0 +1,52 @@
+# Publishes KORA on GitHub Pages.
+# The team uploaded files at different folder levels, so this rebuilds the
+# layout the site expects (pages at the top, css/, js/, images/) at publish time.
+# Nobody's files are moved in the repository.
+name: Deploy KORA website
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: true
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Arrange the site's folders
+        run: |
+          mkdir -p _site/css _site/js _site/images
+          find . -path ./_site -prune -o -path ./.git -prune -o -path ./.github -prune -o -path ./app -prune -o -type f -print |
+          while read -r f; do
+            case "$f" in
+              *.html) cp "$f" _site/ ;;
+              *.css) cp "$f" _site/css/ ;;
+              *.js) cp "$f" _site/js/ ;;
+              *.jpg|*.jpeg|*.png|*.svg|*.webp) cp "$f" _site/images/ ;;
+            esac
+          done
+          touch _site/.nojekyll
+          ls -R _site
+
+      - uses: actions/configure-pages@v5
+
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: _site
+
+      - id: deployment
+        uses: actions/deploy-pages@v4
